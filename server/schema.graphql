@@ -1,6 +1,10 @@
 scalar DateTime
 
+
 type Query {
+  # General Object Requests
+  user(id: ID!): User!
+  users: [User!]!
   service(id: ID!): Service!
   services: [Service!]!
 }
@@ -31,4 +35,18 @@ type Service {
   # environments: [Environment!]!
   # owner: User
   # tenant: Tenant!
+}
+
+
+## SERVER-obscured Type Classes
+type AuthPayload {
+  token: String
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  # tenantRoles: [Tenant!]!
 }

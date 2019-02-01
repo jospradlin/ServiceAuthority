@@ -1,245 +1,55 @@
 const { getUserId } = require('../utils/utils');
-const Axios = require('axios');
-const https = require('https');
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
-// const info = () => `This is an info return.`;
-
-// async function vmhosts(parent, args, context, info) {
-
-//   // At Req Level
-//   const agent = new https.Agent({
-//     rejectUnauthorized: false
-//   });
-
-//   var auth_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/com/vmware/cis/session`;
-//   var hosts_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/vcenter/host`;
-//   // var uname = 'xxx';
-//   // var pass = 'xxx';
-//   const res = await Axios.post(auth_uri, {}, {
-//     httpsAgent: agent,
-//     auth: {
-//       username: uname,
-//       password: pass
-//     }
-//   });
-
-//   const cookiePieces = res.headers['set-cookie'][0].split(';');
-//   const cookie_name = cookiePieces[0].split('=', 2)[0];
-//   const cookie_value = cookiePieces[0].split('=', 2)[1];
-//   const getHosts = await Axios.get(hosts_uri, {
-//     httpsAgent: agent,
-//     headers: {
-//       Cookie: `${cookie_name}=${cookie_value};`
-//     }
-//   });
-
-//   return getHosts.data["value"];
-// }
-
-// async function vmnetworks(parent, args, context, info) {
-
-//   // At Req Level
-//   const agent = new https.Agent({
-//     rejectUnauthorized: false
-//   });
-
-//   var auth_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/com/vmware/cis/session`;
-//   var hosts_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/vcenter/network`;
-//   // var uname = 'xxx';
-//   // var pass = 'xxx';
-//   const res = await Axios.post(auth_uri, {}, {
-//     httpsAgent: agent,
-//     auth: {
-//       username: uname,
-//       password: pass
-//     }
-//   });
-
-//   const cookiePieces = res.headers['set-cookie'][0].split(';');
-//   const cookie_name = cookiePieces[0].split('=', 2)[0];
-//   const cookie_value = cookiePieces[0].split('=', 2)[1];
-//   const getHosts = await Axios.get(hosts_uri, {
-//     httpsAgent: agent,
-//     headers: {
-//       Cookie: `${cookie_name}=${cookie_value};`
-//     }
-//   });
-
-//   return getHosts.data["value"];
-// }
-
-// async function vmdatastores(parent, args, context, info) {
-
-//   // At Req Level
-//   const agent = new https.Agent({
-//     rejectUnauthorized: false
-//   });
-
-//   var auth_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/com/vmware/cis/session`;
-//   var hosts_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/vcenter/datastore`;
-//   // var uname = 'xxx';
-//   // var pass = 'xxx';
-//   const res = await Axios.post(auth_uri, {}, {
-//     httpsAgent: agent,
-//     auth: {
-//       username: uname,
-//       password: pass
-//     }
-//   });
+// const Axios = require('axios');
+// const https = require('https');
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 
-//   const cookiePieces = res.headers['set-cookie'][0].split(';');
-//   const cookie_name = cookiePieces[0].split('=', 2)[0];
-//   const cookie_value = cookiePieces[0].split('=', 2)[1];
-//   const getHosts = await Axios.get(hosts_uri, {
-//     httpsAgent: agent,
-//     headers: {
-//       Cookie: `${cookie_name}=${cookie_value};`
-//     }
-//   });
-
-//   return getHosts.data["value"];
-// }
-
-// async function vmfolders(parent, args, context, info) {
-
-//   // At Req Level
-//   const agent = new https.Agent({
-//     rejectUnauthorized: false
-//   });
-
-//   var auth_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/com/vmware/cis/session`;
-//   var hosts_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/vcenter/folder`;
-//   // var uname = 'xxx';
-//   // var pass = 'xxx';
-//   const res = await Axios.post(auth_uri, {}, {
-//     httpsAgent: agent,
-//     auth: {
-//       username: uname,
-//       password: pass
-//     }
-//   });
-
-
-//   const cookiePieces = res.headers['set-cookie'][0].split(';');
-//   const cookie_name = cookiePieces[0].split('=', 2)[0];
-//   const cookie_value = cookiePieces[0].split('=', 2)[1];
-//   const getHosts = await Axios.get(hosts_uri, {
-//     httpsAgent: agent,
-//     headers: {
-//       Cookie: `${cookie_name}=${cookie_value};`
-//     }
-//   });
-
-//   return getHosts.data["value"];
-// }
-
-// ////////
-
-// async function vms(parent, args, context, info) {
-
-//   // At Req Level
-//   const agent = new https.Agent({
-//     rejectUnauthorized: false
-//   });
-
-//   var auth_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/com/vmware/cis/session`;
-//   var hosts_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/vcenter/vm`;
-//   // var uname = 'xxx';
-//   // var pass = 'xxx';
-//   const res = await Axios.post(auth_uri, {}, {
-//     httpsAgent: agent,
-//     auth: {
-//       username: uname,
-//       password: pass
-//     }
-//   });
-
-//   const cookiePieces = res.headers['set-cookie'][0].split(';');
-//   const cookie_name = cookiePieces[0].split('=', 2)[0];
-//   const cookie_value = cookiePieces[0].split('=', 2)[1];
-//   const getHosts = await Axios.get(hosts_uri, {
-//     httpsAgent: agent,
-//     headers: {
-//       Cookie: `${cookie_name}=${cookie_value};`
-//     }
-//   });
-
-//   return getHosts.data["value"];
-// }
-
-// async function vmdatacenters(parent, args, context, info) {
-
-//   // At Req Level
-//   const agent = new https.Agent({
-//     rejectUnauthorized: false
-//   });
-
-//   var auth_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/com/vmware/cis/session`;
-//   var hosts_uri = `${process.env.VMWARE_CARYLAB_URI}/rest/vcenter/datacenter`;
-//   // var uname = 'xxx';
-//   // var pass = 'xxx';
-//   const res = await Axios.post(auth_uri, {}, {
-//     httpsAgent: agent,
-//     auth: {
-//       username: uname,
-//       password: pass
-//     }
-//   });
-
-//   const cookiePieces = res.headers['set-cookie'][0].split(';');
-//   const cookie_name = cookiePieces[0].split('=', 2)[0];
-//   const cookie_value = cookiePieces[0].split('=', 2)[1];
-//   const getHosts = await Axios.get(hosts_uri, {
-//     httpsAgent: agent,
-//     headers: {
-//       Cookie: `${cookie_name}=${cookie_value};`
-//     }
-//   });
-
-//   return getHosts.data["value"];
-// }
-
-const users = async ( parent, args, context, info) => {
+const service = async (root, args, context) => {
   const userId = getUserId(context)
-  return context.db.query.users({}, info)
+  return context.prisma.service({ id: args.id })
 };
 
-const user = async ( parent, args, context, info ) => {
-  const userId = getUserId(context)
-  return context.db.query.user({ where: {
-    id: args.id
-  }}, info)
+const services = async (root, args, context) => {
+    const userId = getUserId(context)
+    return context.prisma.services()
 };
 
-// const tenants = async (parent, args, context, info) => {
+const user = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.user({ id: args.id })
+};
+
+const users = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.users()
+};
+
+
+// const users = async ( parent, args, context, info) => {
 //   const userId = getUserId(context)
-//   return context.db.query.tenants({}, info)
+//   return context.db.query.users({}, info)
 // };
 
-// const tenant = async (parent, args, context, info) => {
+// const user = async ( parent, args, context, info ) => {
 //   const userId = getUserId(context)
-//   return context.db.query.tenant({
+//   return context.db.query.user({ where: {
+//     id: args.id
+//   }}, info)
+// };
+
+// const services = async (parent, args, context, info) => {
+//   //const userId = getUserId(context)
+//   return context.db.query.services({}, info)
+// };
+
+// const service = async (parent, args, context, info) => {
+//   //const userId = getUserId(context)
+//   return context.db.query.service({
 //     where: {
 //       id: args.id
 //     }
 //   }, info)
 // };
-
-const services = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  return context.db.query.services({}, info)
-};
-
-const service = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  return context.db.query.service({
-    where: {
-      id: args.id
-    }
-  }, info)
-};
 
 // const environments = async (parent, args, context, info) => {
 //   //const userId = getUserId(context)

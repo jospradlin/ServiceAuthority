@@ -1,15 +1,12 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { prisma } = require('./generated/prisma-client')
 
+const Query = require('./resolvers/Query');
+const Service = require('./resolvers/Service');
+const AuthPayload = require('./resolvers/AuthPayload');
+
 const resolvers = {
-    Query: {
-        service: (root, args, context) => {
-            return context.prisma.service({ id: args.id })
-        },
-        services: (root, args, context) => {
-            return context.prisma.services()
-        }
-    },
+    Query,
     Mutation: {
         // 2
         createService: (root, args, context) => {
@@ -35,13 +32,8 @@ const resolvers = {
         },
 
     },
-    Service: {
-        dependentServices(root, args, context) {
-            return context.prisma.service({
-                id: root.id
-            }).dependentServices()
-        }
-    },
+    Service,
+    AuthPayload,
     // },
     // // 3
     // Service: {
