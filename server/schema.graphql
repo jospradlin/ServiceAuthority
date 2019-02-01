@@ -1,0 +1,34 @@
+scalar DateTime
+
+type Query {
+  service(id: ID!): Service!
+  services: [Service!]!
+}
+
+type Mutation {
+  createService( name: String!, code: String!, description: String, status: String!, type: String!, version: String, canBeRemoved: Boolean ): Service
+  removeServiceById( id: ID! ): Service
+}
+
+type Link {
+  id: ID!
+  description: String!
+  url: String!
+}
+
+type Service {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  code: String!
+  description: String
+  status: String!
+  type: String!
+  version: String
+  canBeRemoved: Boolean
+  dependentServices: [Service!]!
+  # environments: [Environment!]!
+  # owner: User
+  # tenant: Tenant!
+}

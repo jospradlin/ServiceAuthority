@@ -1,0 +1,133 @@
+## User Management
+
+enum Role {
+  MASTER_ADMIN
+  TENANT_ADMIN
+  TEAM_MEMBER
+}
+
+type User {
+  id: ID! @unique
+  name: String!
+  email: String! @unique
+  password: String!
+  tenantRoles: [TenantRole!]!
+}
+
+type Tenant {
+  id: ID! @unique
+  name: String!
+  description: String
+  users: [User!]!
+}
+
+type TenantRole {
+  id: ID! @unique
+  user: User!
+  tenant: Tenant!
+  role: Role!
+}
+
+
+## Configuration Management
+
+type Service {
+  id: ID! @unique
+  name: String!
+  description: String
+  status: String!
+  type: String!
+  owner: User
+  version: String
+  canBeRemoved: Boolean! @default(value: "true")
+  createdAt: DateTime!
+  tenant: Tenant!
+  dependentServices: [Service!]!
+}
+
+type Service_Environment {
+  id: ID! @unique
+  name: String!
+  description: String
+  components: [Component!]!
+}
+
+enum Service_Architecture_Tier {
+  Web
+  Application
+  Data
+}
+
+type Service_ApplicationDefinition {
+  id: ID! @unique
+  name: String!
+  description: String
+  components: [Component!]!
+}
+
+type Service_Component {
+  id: ID! @unique
+  name: String!
+  tier: Architecture_Tier!
+}
+
+type Service_ComponentAttribute {
+  id: ID! @unique
+  parameter: String!
+  value: String!
+}
+
+type Service_ComponentInstance {
+  id: ID! @unique
+  environment: Environment!
+  component: Component!
+  attributes: [Attribute]
+}
+
+
+
+## OpenShift Objects
+
+type OpenShift_Project {
+  id: ID! @unique
+  uid: String! @unique
+  name: String!
+  link: String!
+  displayName: String
+  description: String
+  requestor: String
+}
+
+type OpenShift_Deployment {
+  id: ID! @unique
+  uid: String! @unique
+  name: String!
+  link: String!
+  namespace: OpenShift_Project!
+  generation: Int
+  creationTimestamp: Int
+  replicas: Int!
+  container: [OpenShift_Container!]!
+  labels: [OpenShift_Label!]!
+}
+
+type OpenShift_Container {
+  id: ID! @unique
+  deployment: OpenShift_Deployment
+  name: String!
+  image: String!
+  port: Int!
+  
+}
+
+type OpenShift_Label {
+  id: ID! @unique
+  objectType: OpenShift_ObjectType!
+  key: String!
+  value: String!
+}
+
+enum OpenShift_ObjectType {
+  Project
+  Deployment
+}

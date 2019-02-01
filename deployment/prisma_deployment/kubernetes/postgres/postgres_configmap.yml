@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: prisma
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: prisma
+  POSTGRES_USER: prisma
+  POSTGRES_PASSWORD: prisma

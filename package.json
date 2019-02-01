@@ -1,0 +1,23 @@
+{
+  "name": "ServiceAuthority",
+  "version": "1.0.0",
+  "description": "ServiceAuthority - ITSM and Capacity Management reimagined",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github-isl-01.ca.com/sprje02/ServiceAuthority.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.18.9"
+  }
+}

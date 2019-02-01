@@ -1,0 +1,12 @@
+{
+    "test": {
+        "PORT": 5000,
+        "JWT_SECRET": "23jdAlkfj23JERkwe2dkalDF;asdajadsfkdsa;sdrEdka",
+        "VAULT_URI": "http://localhost:8201"
+    },
+    "development": {
+        "PORT": 4000,
+        "JWT_SECRET": "F;adjfa;dak32r3as;i(Fdladj;asdkfjads;fgkj23iW#)",
+        "VAULT_URI": "http://localhost:8201"
+    }
+}

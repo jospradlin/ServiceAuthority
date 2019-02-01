@@ -1,0 +1,127 @@
+# import Tenant, TenantRole, Service, Role from "./generated/prisma.graphql"
+
+type Query {
+
+  # General Object Requests
+  user(id: ID!): User!
+  users: [User!]!
+  service(id: ID!): Service!
+  services: [Service!]!
+  tenant(id: ID!): Tenant!
+  tenants: [Tenant!]!
+
+  #VMWare Integration
+  # vmhosts: [VMHosts]
+  # vms: [VirtualMachine]
+  # vmnetworks: [VMNetwork]
+  # vmdatacenters: [VMDatacenter]
+  # vmdatastores: [VMDatastore]
+  # vmfolders: [VMFolder]
+}
+
+type Mutation {
+
+  # User Mutations
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
+
+  # Tenant and Authorization Mutations
+  createTenant(name: String!, description: String): Tenant
+  addUserToTenant(userId: ID!, tenantId: ID!, role: String): TenantRole
+  removeUserFromTenant(userId: ID!, tenantId: ID!): TenantRole
+
+  # #VMWare Integration
+  # vmlogin: String
+
+}
+
+# type VMDatacenter {
+#   name: String!
+#   datacenter: String!
+# }
+
+# type VMDatastore {
+#   name: String!
+#   type:  String!
+#   datastore: String!
+#   capacity: Float
+#   free_space: Float
+# }
+
+# type VMFolder {
+#   name: String!
+#   type:  String!
+#   folder: String!
+# }
+
+# type VMHosts {
+#   host: String!
+#   name: String!
+#   connection_state: String
+#   power_state: String
+# }
+
+# type VirtualMachine {
+#   name: String!
+#   vm: String!
+#   cpu_count: Int
+#   memory_size: Int
+#   power_state: String
+# }
+
+# type VMNetwork {
+#   name: String!
+#   type: String!
+#   network: String!
+# }
+
+
+type AuthPayload {
+  token: String
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  tenantRoles: [Tenant!]!
+}
+
+
+
+# import Link, LinkSubscriptionPayload, Vote, VoteSubscriptionPayload, LinkOrderByInput from "./generated/prisma.graphql"
+
+type Query {
+  info: String!
+  feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!
+}
+
+type Feed {
+  links: [Link!]!
+  count: Int!
+}
+
+type Mutation {
+  post(url: String!, description: String!): Link!
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
+  vote(linkId: ID!): Vote
+}
+
+type Subscription {
+  newLink: LinkSubscriptionPayload
+  newVote: VoteSubscriptionPayload
+}
+
+type AuthPayload {
+  token: String
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  links: [Link!]!
+}

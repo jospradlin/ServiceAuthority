@@ -1,0 +1,165 @@
+#import Tenant, TenantRole, Role, Service, Environment, EnvironmentTenant, Customer, CustomerContact, ArchitectureTier, ComponentTemplate, ComponentInstance, ComponentAttribute, TenantAttribute, ArchitectureType, ArchitectureDefinition from "./generated/prisma-client/prisma-schemas.js"
+
+
+type Query {
+
+  # General Object Requests
+  user(id: ID!): User!
+  users: [User!]!
+  tenant(id: ID!): Tenant!
+  tenants: [Tenant!]!
+  service(id: ID!): Service!
+  services: [Service!]!
+  environment(id: ID!): Environment!
+  environments: [Environment!]!
+  environmentTenant(id: ID!): EnvironmentTenant!
+  environmentTenants: [EnvironmentTenant!]!
+  customer(id: ID!): Customer!
+  customers: [Customer!]!
+  customerContact(id: ID!): CustomerContact!
+  customerContacts: [CustomerContact!]!
+  architectureTier(id: ID!): ArchitectureTier!
+  architectureTiers: [ArchitectureTier!]!
+  architectureType(id: ID!): ArchitectureType
+  architectureTypes: [ArchitectureType!]!
+  architectureDefinition(id: ID!): ArchitectureDefinition
+  architectureDefinitions: [ArchitectureDefinition!]!
+  componentTemplate(id: ID!): ComponentTemplate!
+  componentTemplates: [ComponentTemplate!]!
+  componentInstance(id: ID!): ComponentInstance!
+  componentInstances: [ComponentInstance!]!
+  componentAttributeById(id: ID!): ComponentAttribute
+  componentAttributeByParameter(parameter: String!): ComponentAttribute
+  componentAttributes: [ComponentAttribute!]!
+  tenantAttributeById(id: ID!): TenantAttribute
+  tenantAttributeByParameter(parameter: String!): TenantAttribute
+  tenantAttributes: [TenantAttribute!]!
+}
+
+type Mutation {
+
+  # User Mutations
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
+
+  # # Tenant and Authorization Mutations
+  createTenant(name: String!, description: String): Tenant
+  addUserToTenant(userId: ID!, tenantId: ID!, role: String): TenantRole
+  removeUserFromTenant(userId: ID!, tenantId: ID!): TenantRole
+  
+  ##### Configuration Management - Service, Environments, Environment-specific Tenants, and Customers #####
+  ### Service
+  createService( serviceObject: ServiceInput! ): Service
+  createService_BATCH( name: String!, code: String!, description: String, status: String!, type: String!, version: String, canBeRemoved: Boolean ): Service
+  updateServiceById( id: ID!, serviceObject: ServiceInput ): Service
+  updateServiceByCode( code: String!, serviceObject: ServiceInput ): Service
+  removeServiceById( serviceId: ID! ): Service
+  removeServiceByCode( serviceCode: String! ): Service
+
+  ### Environment
+  createEnvironment( environmentObject: EnvironmentInput!, service: ObjectQueryInput! ): Environment
+  createEnvironment_BATCH( name: String!, code: String!, description: String, classification: String!, region: String, serviceCode: String! ): Environment
+  updateEnvironmentParametersById( environmentObject: EnvironmentInput, environmentId: ID! ): Environment
+  updateEnvironmentParametersByCode( environmentObject: EnvironmentInput, environmentCode: String! ): Environment
+  removeEnvironmentById ( environmentId: ID! ): Environment
+  removeEnvironmentByCode( environmentCode: String! ): Environment
+
+  ### Environment Tenant
+  createEnvironmentTenant( environmentTenantObject: EnvironmentTenantInput!, customerCode: String!, environmentCode: String! ): EnvironmentTenant
+  createEnvironmentTenant_BATCH( name: String!, code: String!, class: String, primaryContactEmail: String, tenantCreationDate: DateTime, customerCode: String!, environmentCode: String! ): EnvironmentTenant
+  updateEnvironmentTenantParametersById( tenantId: ID!, environmentTenantObject: EnvironmentTenantInput! ): EnvironmentTenant
+  updateEnvironmentTenantParametersByCode( tenantCode: String!, environmentTenantObject: EnvironmentTenantInput! ): EnvironmentTenant
+  removeEnvironmentTenantById( tenantId: ID! ): EnvironmentTenant
+  removeEnvironmentTenantByCode( tenantCode: String! ): EnvironmentTenant
+
+  ### Customer and Customer Contact
+  createCustomer( customer: CustomerInput! ): Customer
+  createCustomer_BATCH( name: String!, code: String!, status: String!): Customer
+  updateCustomer( customerId: ID!, customer: CustomerInput! ): Customer
+  removeCustomerById( customerId: ID! ): Customer
+  removeCustomerByCode( customerCode: String! ): Customer
+  createCustomerContact( customerContact: CustomerContactInput!, customerCode: String! ): CustomerContact
+  createCustomerContact_BATCH( name: String!, email: String!, phone: String, sms: String, customerCode: String! ): CustomerContact
+  updateCustomerContact( customerContact: CustomerContactInput!, contactId: ID! ): CustomerContact
+  removeCustomerContact( contactId: ID! ): CustomerContact
+
+  ## Configuration Management - Architecture Data Structures
+  createArchitectureTier( name: String!, priority: Int!): ArchitectureTier
+  updateArchitectureTier( tierId: ID!, name: String!, priority: Int!): ArchitectureTier
+  removeArchitectureTier( id: ID! ): ArchitectureTier
+  createArchitectureType( name: String!): ArchitectureType
+  updateArchitectureType( typeId: ID!, name: String!): ArchitectureType
+  removeArchitectureType( id: ID! ): ArchitectureType
+  createArchitectureDefinition( name: String!, code: String!, description: String, type: String!): ArchitectureDefinition
+  updateArchitectureDefinitionParameters( definitionId: ID!, name: String!, code: String!, description: String): ArchitectureDefinition
+  removeArchitectureDefinition( id: ID! ): ArchitectureDefinition
+  createComponentTemplate( name: String!, code: String!, tier: String!): ComponentTemplate
+  removeComponentTemplate( componentTemplateId: ID! ): ComponentTemplate
+  createComponentInstance( name: String!, environmentCode: String!, compontentTemplateCode: String!): ComponentInstance
+  removeComponentInstance( componentInstanceId: ID! ): ComponentInstance
+  createComponentAttribute( parameter: String!, value: String!, componentInstanceName: String!): ComponentAttribute
+  removeComponentAttributeById( attributeId: ID! ): ComponentAttribute
+  removeComponentAttributeByParameter( parameter: String! ): ComponentAttribute
+  createTenantAttribute( parameter: String!, value: String!, tenantCode: String!): TenantAttribute
+  removeTenantAttributeById( attributeId: ID! ): TenantAttribute
+  removeTenantAttributeByParameter( parameter: String! ): TenantAttribute
+}
+
+## SERVER-obscured Type Classes
+type AuthPayload {
+  token: String
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  tenantRoles: [Tenant!]!
+}
+
+## Input Objects
+
+input ServiceInput {
+  name: String!
+  code: String!
+  description: String
+  status: String!
+  type: String!
+  version: String
+  canBeRemoved: Boolean
+}
+
+input ObjectQueryInput {
+  id: ID
+  code: String
+}
+
+input EnvironmentInput {
+  name: String!
+  code: String!
+  description: String
+  classification: String!
+  region: String
+}
+
+input EnvironmentTenantInput {
+  name: String!
+  code: String!
+  class: String
+  primaryContactEmail: String
+  tenantCreationDate: DateTime
+}
+
+input CustomerInput {
+  name: String!
+  code: String!
+  status: String!
+}
+
+input CustomerContactInput {
+  name: String!
+  email: String!
+  phone: String
+  sms: String
+}

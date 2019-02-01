@@ -1,0 +1,20 @@
+# The service name, this will be part of the endpoint of the Prisma API
+#service: SA-primary-ds
+
+# The deployment stage, this will also be part of the API endpoint
+#stage: demo
+
+# EndPoint
+#endpoint: http://localhost:4466
+endpoint: http://localhost:4467/cm
+
+# Points to the file that holds your data model
+datamodel: datamodel.graphql
+
+# You can only access the API when providing JWTs that are signed with this secret
+secret: S3rv1c3Auth0r1ty!123!
+
+# Post-Deployment hooks
+generate:
+  - generator: javascript-client
+    output: ../src/generated/prisma-client

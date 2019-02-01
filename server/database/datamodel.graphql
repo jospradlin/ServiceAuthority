@@ -1,0 +1,179 @@
+# ## User Management
+
+enum Role {
+  MASTER_ADMIN
+  TENANT_ADMIN
+  TEAM_MEMBER
+}
+
+type User {
+  id: ID! @unique
+  name: String!
+  email: String! @unique
+  password: String!
+  #tenantRoles: [TenantRole!]!
+}
+
+# type Tenant {
+#   id: ID! @unique
+#   name: String!
+#   description: String
+#   users: [User!]!
+# }
+
+# type TenantRole {
+#   id: ID! @unique
+#   user: User!
+#   tenant: Tenant!
+#   role: Role!
+# }
+
+
+## Configuration Management
+
+type Service {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  code: String! @unique
+  description: String
+  status: String!
+  type: String!
+  version: String
+  canBeRemoved: Boolean! @default(value: "true")
+  dependentServices: [Service!]!
+  # environments: [Environment!]!
+  # owner: User
+  # tenant: Tenant!
+}
+
+type Customer {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  code: String! @unique
+  status: String @default(value: "active")
+  # contacts: [CustomerContact!]!
+  # tenants: [EnvironmentTenant!]!
+}
+
+type CustomerContact {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  email: String! @unique
+  phone: String
+  sms: String
+  customer: Customer!
+}
+
+# type EnvironmentTenant {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   name: String!
+#   code: String! @unique
+#   class: String
+#   primaryContactEmail: String
+#   tenantCreationDate: DateTime
+#   customer: Customer!
+#   environment: Environment!
+#   attributes: [TenantAttribute!]!
+# }
+
+
+type Environment {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  code: String! @unique
+  description: String
+  region: String
+  classification: String!
+  service: Service!
+  # tenants: [EnvironmentTenant!]!
+  # components: [ComponentInstance!]!
+}
+
+# type ArchitectureTier {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   name: String! @unique
+#   priority: Int!
+# }
+
+# type ComponentTemplate {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   name: String!
+#   code: String! @unique
+#   tier: ArchitectureTier!
+# }
+
+# type ComponentInstance {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   name: String! @unique
+#   environment: Environment!
+#   component: ComponentTemplate!
+#   attributes: [ComponentAttribute!]!
+# }
+
+# enum ObjectAttributeType {
+#   ENVIRONMENT_TENANT
+#   COMPONENT
+# }
+
+# interface Attribute {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   parameter: String! @unique
+#   value: String!
+# }
+
+# type TenantAttribute implements Attribute {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   parameter: String! @unique
+#   value: String!
+#   tenant: EnvironmentTenant!
+# }
+
+# type ComponentAttribute implements Attribute {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   parameter: String! @unique
+#   value: String!
+#   component: ComponentInstance!
+# }
+
+# type ArchitectureType {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   name: String! @unique
+#   # infrastructureTypes: [InfrastructureTypes!]!
+# }
+
+# type ArchitectureDefinition {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   name: String! @unique
+#   code: String! @unique
+#   description: String
+#   type: ArchitectureType!
+#   components: [ComponentTemplate!]!
+# }
+
+
