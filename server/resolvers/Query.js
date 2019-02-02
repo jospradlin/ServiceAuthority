@@ -5,25 +5,64 @@ const { getUserId } = require('../utils/utils');
 
 
 const service = async (root, args, context) => {
-  const userId = getUserId(context)
-  return context.prisma.service({ id: args.id })
+  // const userId = getUserId(context)
+  return await context.prisma.service({ id: args.id })
 };
 
 const services = async (root, args, context) => {
-    const userId = getUserId(context)
-    return context.prisma.services()
+  // const userId = getUserId(context)
+  return await context.prisma.services()
 };
 
 const user = async (root, args, context) => {
-  const userId = getUserId(context)
-  return context.prisma.user({ id: args.id })
+  // const userId = getUserId(context)
+  return await context.prisma.user({ id: args.id })
 };
 
 const users = async (root, args, context) => {
-  const userId = getUserId(context)
-  return context.prisma.users()
+  // const userId = getUserId(context)
+  return await context.prisma.users()
 };
 
+const environment = async (root, args, context) => {
+  const userId = getUserId(context)
+  return await context.prisma.environment({ id: args.id })
+};
+
+const environments = async (root, args, context) => {
+  const userId = getUserId(context)
+  return await context.prisma.environments()
+};
+
+const environmentTenant = async (root, args, context) => {
+  const userId = getUserId(context)
+  return await context.prisma.environmentTenant({ id: args.id })
+};
+
+const environmentTenants = async (root, args, context) => {
+  const userId = getUserId(context)
+  return await context.prisma.environmentTenants()
+};
+
+const customer = async (root, args, context) => {
+  const userId = getUserId(context)
+  return await context.prisma.environmentTenant({ id: args.id })
+};
+
+const customers = async (root, args, context) => {
+  const userId = getUserId(context)
+  return await context.prisma.environmentTenants()
+};
+
+const customerContact = async (root, args, context) => {
+  const userId = getUserId(context)
+  return await context.prisma.customerContact({ id: args.id })
+};
+
+const customerContacts = async (root, args, context) => {
+  const userId = getUserId(context)
+  return await context.prisma.customerContacts()
+};
 
 // const users = async ( parent, args, context, info) => {
 //   const userId = getUserId(context)
@@ -37,19 +76,6 @@ const users = async (root, args, context) => {
 //   }}, info)
 // };
 
-// const services = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.services({}, info)
-// };
-
-// const service = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.service({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
 
 // const environments = async (parent, args, context, info) => {
 //   //const userId = getUserId(context)
@@ -233,14 +259,14 @@ module.exports = {
   // tenant,
   services,
   service,
-  // environments,
-  // environment,
-  // environmentTenants,
-  // environmentTenant,
-  // customers,
-  // customer,
-  // customerContacts,
-  // customerContact,
+  environments,
+  environment,
+  environmentTenants,
+  environmentTenant,
+  customers,
+  customer,
+  customerContacts,
+  customerContact,
   // architectureTiers,
   // architectureTier,
   // componentTemplates,

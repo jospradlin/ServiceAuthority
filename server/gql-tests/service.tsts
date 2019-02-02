@@ -1,0 +1,80 @@
+######Service Tests
+query allServices{
+  services {
+    id
+    code
+    name
+    description
+    version
+    type
+    status
+    canBeRemoved
+    createdAt
+  	updatedAt
+  }
+}
+
+mutation removeA {
+	removeServiceByCode(code: "test1code") {
+    id
+  }
+}
+mutation removeB {
+	removeServiceByCode(code: "test2code") {
+    id
+  }
+}
+
+mutation removeC {
+	removeServiceById(id: "cjrn0cre500zp0830ug2zr6h8") {
+    id
+  }
+}
+# mutation b{
+#   removeServiceById(id: "cjrmlhjpw00ti0830cxewzye0") {
+#     id
+#   }
+# }
+# mutation c {
+#   removeServiceById(id: "cjrmli5ke00vw0830n0r115nn") {
+#     id
+#   }
+# }
+# mutation d {
+#   removeServiceById(id: "cjrmlligu00wi0830ronxlkzn") {
+#     id
+#   }
+# }
+# mutation e {
+#   removeServiceById(id: "cjrmllldt00wn0830hnkwg78t") {
+#     id
+#   }
+# }
+
+mutation createServiceNormal{
+  createService(name: "test1", code: "test1code",
+  	type: "not core", status: "active", version: "0.5" canBeRemoved: true) {
+    id
+  }
+}
+
+mutation createServiceObj{
+  createServiceByObj( serviceObject: { name: "test2", code: "test2code",
+  	type: "core", status: "inactive", version: "1.0" canBeRemoved: false } ) {
+    id
+  }
+}
+
+mutation updateServiceById{
+  updateServiceById( id: "cjrn0lvfs0100083084hz4mvp", serviceObject: { name: "test2", code: "test2code",
+  	type: "core", status: "inactive", version: "1.0" canBeRemoved: false } ) {
+    id
+  }
+}
+
+mutation updateServiceByCode{
+  updateServiceByCode( code: "test1code", serviceObject: { name: "test2", code: "test2code",
+  	type: "core", status: "inactive", version: "1.0" canBeRemoved: false } ) {
+    id
+  }
+}

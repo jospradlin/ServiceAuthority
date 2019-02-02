@@ -2,16 +2,69 @@ scalar DateTime
 
 
 type Query {
+
   # General Object Requests
   user(id: ID!): User!
   users: [User!]!
+  # tenant(id: ID!): Tenant!
+  # tenants: [Tenant!]!
   service(id: ID!): Service!
   services: [Service!]!
+  environment(id: ID!): Environment!
+  environments: [Environment!]!
+  environmentTenant(id: ID!): EnvironmentTenant!
+  environmentTenants: [EnvironmentTenant!]!
+  customer(id: ID!): Customer!
+  customers: [Customer!]!
+  customerContact(id: ID!): CustomerContact!
+  customerContacts: [CustomerContact!]!
+
 }
 
 type Mutation {
+
+  # User Mutations
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
+
+  ##################### Configuration Management #####################
+  ## - Service, Environments, Environment Tenants, and Customers #####
+  
+  ### Service ###
+  createServiceByObj( serviceObject: ServiceInput! ): Service
   createService( name: String!, code: String!, description: String, status: String!, type: String!, version: String, canBeRemoved: Boolean ): Service
+  updateServiceById( id: ID!, serviceObject: ServiceInput ): Service
+  updateServiceByCode( code: String!, serviceObject: ServiceInput ): Service
   removeServiceById( id: ID! ): Service
+  removeServiceByCode( code: String! ): Service
+
+  ### Environment ###
+  createEnvironment( environmentObject: EnvironmentInput!, service: ObjectQueryInput! ): Environment
+  createEnvironment_BATCH( name: String!, code: String!, description: String, classification: String!, region: String, serviceCode: String! ): Environment
+  updateEnvironmentParametersById( environmentObject: EnvironmentInput, environmentId: ID! ): Environment
+  updateEnvironmentParametersByCode( environmentObject: EnvironmentInput, environmentCode: String! ): Environment
+  removeEnvironmentById ( environmentId: ID! ): Environment
+  removeEnvironmentByCode( environmentCode: String! ): Environment
+
+  ### Environment Tenant ###
+  createEnvironmentTenant( environmentTenantObject: EnvironmentTenantInput!, customerCode: String!, environmentCode: String! ): EnvironmentTenant
+  createEnvironmentTenant_BATCH( name: String!, code: String!, class: String, primaryContactEmail: String, tenantCreationDate: DateTime, customerCode: String!, environmentCode: String! ): EnvironmentTenant
+  updateEnvironmentTenantParametersById( tenantId: ID!, environmentTenantObject: EnvironmentTenantInput! ): EnvironmentTenant
+  updateEnvironmentTenantParametersByCode( tenantCode: String!, environmentTenantObject: EnvironmentTenantInput! ): EnvironmentTenant
+  removeEnvironmentTenantById( tenantId: ID! ): EnvironmentTenant
+  removeEnvironmentTenantByCode( tenantCode: String! ): EnvironmentTenant
+
+  ### Customer and Customer Contact ###
+  createCustomer( customer: CustomerInput! ): Customer
+  createCustomer_BATCH( name: String!, code: String!, status: String!): Customer
+  updateCustomer( customerId: ID!, customer: CustomerInput! ): Customer
+  removeCustomerById( customerId: ID! ): Customer
+  removeCustomerByCode( customerCode: String! ): Customer
+  createCustomerContact( customerContact: CustomerContactInput!, customerCode: String! ): CustomerContact
+  createCustomerContact_BATCH( name: String!, email: String!, phone: String, sms: String, customerCode: String! ): CustomerContact
+  updateCustomerContact( customerContact: CustomerContactInput!, contactId: ID! ): CustomerContact
+  removeCustomerContact( contactId: ID! ): CustomerContact
+
 }
 
 type Link {
@@ -49,4 +102,102 @@ type User {
   name: String!
   email: String!
   # tenantRoles: [Tenant!]!
+}
+
+type Customer {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  code: String!
+  status: String!
+  contacts: [CustomerContact!]!
+  # tenants: [EnvironmentTenant!]!
+}
+
+type CustomerContact {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  email: String!
+  phone: String
+  sms: String
+  customer: Customer!
+}
+
+type EnvironmentTenant {
+  id: ID! 
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  code: String!
+  class: String
+  primaryContactEmail: String
+  tenantCreationDate: DateTime
+  customer: Customer!
+  environment: Environment!
+  #attributes: [TenantAttribute!]!
+}
+
+
+type Environment {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  code: String!
+  description: String
+  region: String
+  classification: String!
+  service: Service!
+  tenants: [EnvironmentTenant!]!
+  # components: [ComponentInstance!]!
+}
+
+
+## Input Objects
+
+input ServiceInput {
+  name: String!
+  code: String!
+  description: String
+  status: String!
+  type: String!
+  version: String
+  canBeRemoved: Boolean
+}
+
+input ObjectQueryInput {
+  id: ID
+  code: String
+}
+
+input EnvironmentInput {
+  name: String!
+  code: String!
+  description: String
+  classification: String!
+  region: String
+}
+
+input EnvironmentTenantInput {
+  name: String!
+  code: String!
+  class: String
+  primaryContactEmail: String
+  tenantCreationDate: DateTime
+}
+
+input CustomerInput {
+  name: String!
+  code: String!
+  status: String!
+}
+
+input CustomerContactInput {
+  name: String!
+  email: String!
+  phone: String
+  sms: String
 }

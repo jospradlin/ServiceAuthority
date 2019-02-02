@@ -7,135 +7,110 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const { APP_SECRET, getUserId } = require('../utils/utils');
 
 
-const createTenant = async (parent, args, context, info) => {
-  const userId = getUserId(context)
-  console.log(args);
+// const createTenant = async (parent, args, context, info) => {
+//   const userId = getUserId(context)
+//   console.log(args);
 
-  const tenant = await context.db.mutation.createTenant(
-    {
-      data: {
-        ...args
-        }
-    },
-    info,
-  );
+//   const tenant = await context.db.mutation.createTenant(
+//     {
+//       data: {
+//         ...args
+//         }
+//     },
+//     info,
+//   );
 
-  return tenant;
-};
+//   return tenant;
+// };
 
-const addUserToTenant = async (parent, args, context, info) => {
-  const userId = getUserId(context)
-  const tenant = await context.db.mutation.updateTenant(
-    {
-      data: {
-        users: {
-          connect: {
-            id: args.userId
-          }
-        }
-      },
-      where: {
-        id: args.tenantId
-      }
-    },
-    info,
-  );
+// const addUserToTenant = async (parent, args, context, info) => {
+//   const userId = getUserId(context)
+//   const tenant = await context.db.mutation.updateTenant(
+//     {
+//       data: {
+//         users: {
+//           connect: {
+//             id: args.userId
+//           }
+//         }
+//       },
+//       where: {
+//         id: args.tenantId
+//       }
+//     },
+//     info,
+//   );
 
-  return tenant;
-};
+//   return tenant;
+// };
 
-const removeUserFromTenant = async (parent, args, context, info) => {
-  const userId = getUserId(context)
-  const tenant = await context.db.mutation.updateTenant(
-    {
-      data: {
-        users: {
-          disconnect: {
-            id: args.userId
-          }
-        }
-      },
-      where: {
-        id: args.tenantId
-      }
-    },
-    info,
-  );
+// const removeUserFromTenant = async (parent, args, context, info) => {
+//   const userId = getUserId(context)
+//   const tenant = await context.db.mutation.updateTenant(
+//     {
+//       data: {
+//         users: {
+//           disconnect: {
+//             id: args.userId
+//           }
+//         }
+//       },
+//       where: {
+//         id: args.tenantId
+//       }
+//     },
+//     info,
+//   );
 
-  return tenant;
-};
+//   return tenant;
+// };
 
 
 // Service
-const createService = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  console.log(args);
-
-  const service = await context.db.mutation.createService (
+const createService = async (root, args, context) => {
+  // const userId = getUserId(context)
+  return await context.prisma.createService(
     {
-      data: {
-        ...args.serviceObject
-      }
-    },
-    info,
-  );
-
-  return service;
+      ...args
+    }
+  )
 };
 
-const createService_BATCH = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  console.log(args);
-
-  const service = await context.db.mutation.createService(
-    {
-      data: {
-        ...args
-      }
-    },
-    info,
-  );
-
-  return service;
+const createServiceByObj = async (root, args, context) => {
+  // const userId = getUserId(context)
+    return await context.prisma.createService({...args.serviceObject})
 };
 
-const updateServiceById = async (parent, args, context, info) => {
+const removeServiceById = async (root, args, context) => {
   //const userId = getUserId(context)
-  console.log(args);
-
-  const service = await context.db.mutation.updateService(
-    {
-      data: {
-        ...args.serviceObject
-      },
-      where: {
-        id: args.id
-      }
-    },
-    info,
-  );
-
-  return service;
+  return await context.prisma.deleteService({ id: args.id })
 };
 
-const updateServiceByCode = async (parent, args, context, info) => {
+const removeServiceByCode = async (root, args, context) => {
   //const userId = getUserId(context)
-  console.log(args);
-
-  const service = await context.db.mutation.updateService(
-    {
-      data: {
-        ...args.serviceObject
-      },
-      where: {
-        code: args.code
-      }
-    },
-    info,
-  );
-
-  return service;
+  return await context.prisma.deleteService({ code: args.code })
 };
+
+const updateServiceById = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.updateService(
+    {
+      where: { id: args.id },
+      data: { ...args.serviceObject },
+    },
+  )
+};
+
+const updateServiceByCode = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.updateService(
+    {
+      where: { code: args.code },
+      data: { ...args.serviceObject },
+    },
+  )
+};
+
 
 /// REMOVED FOR NOW -- BASED ON API DESIGN
 // const removeService = async (parent, args, context, info) => {
@@ -168,35 +143,7 @@ const updateServiceByCode = async (parent, args, context, info) => {
 //   return service;
 // };
 
-const removeServiceById = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  const service = await context.db.mutation.deleteService(
-      {
-        where: {
-          id: args.serviceId
-        }
-      },
-      info,
-    );
-  
 
-  return service;
-};
-
-const removeServiceByCode = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  const service = await context.db.mutation.deleteService(
-    {
-      where: {
-        code: args.serviceCode
-      }
-    },
-    info,
-  );
-
-
-  return service;
-};
 
 // Environment
 const createEnvironment = async (parent, args, context, info) => {
@@ -1034,13 +981,20 @@ const removeArchitectureDefinition = async (parent, args, context, info) => {
 
 
 
-async function signup(parent, args, context, info) {
+
+const signup = async (root, args, context) => {
+
   // 1
   const password = await bcrypt.hash(args.password, 10)
+
   // 2
-  const user = await context.db.mutation.createUser({
-    data: { ...args, password },
-  }, `{ id }`)
+  const user = await context.prisma.createUser(
+    {
+      ...args, 
+      password,
+    }, 
+    `{ id }`
+  )
 
   // 3
   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 })
@@ -1050,11 +1004,12 @@ async function signup(parent, args, context, info) {
     token,
     user,
   }
-}
 
-async function login(parent, args, context, info) {
+};
+
+const login = async (root, args, context) => {
   // 1
-  const user = await context.db.query.user({ where: { email: args.email } }, ` { id password } `)
+  const user = await context.prisma.user({ email: args.email }, ` { id password } `)
   if (!user) {
     throw new Error('No such user found')
   }
@@ -1072,7 +1027,48 @@ async function login(parent, args, context, info) {
     token,
     user,
   }
-}
+};
+
+
+// async function signup(parent, args, context, info) {
+//   // 1
+//   const password = await bcrypt.hash(args.password, 10)
+//   // 2
+//   const user = await context.db.mutation.createUser({
+//     data: { ...args, password },
+//   }, `{ id }`)
+
+//   // 3
+//   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 })
+
+//   // 4
+//   return {
+//     token,
+//     user,
+//   }
+// }
+
+// async function login(parent, args, context, info) {
+//   // 1
+//   const user = await context.db.query.user({ where: { email: args.email } }, ` { id password } `)
+//   if (!user) {
+//     throw new Error('No such user found')
+//   }
+
+//   // 2
+//   const valid = await bcrypt.compare(args.password, user.password)
+//   if (!valid) {
+//     throw new Error('Invalid password')
+//   }
+
+//   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 })
+
+//   // 3
+//   return {
+//     token,
+//     user,
+//   }
+// }
 
 // async function vote(parent, args, context, info) {
 //   // 1
@@ -1102,53 +1098,66 @@ async function login(parent, args, context, info) {
 module.exports = {
     signup,
     login,
-    createTenant,
-    addUserToTenant,
-    removeUserFromTenant,
+    // createTenant,
+    // addUserToTenant,
+    // removeUserFromTenant,
+
+    // Service CI
     createService,
-    createService_BATCH,
+    createServiceByObj,
     updateServiceById,
     updateServiceByCode,
     removeServiceById,
     removeServiceByCode,
-    createEnvironment,
-    createEnvironment_BATCH,
-    updateEnvironmentParametersById,
-    updateEnvironmentParametersByCode,
-    removeEnvironmentById,
-    removeEnvironmentByCode,
-    createEnvironmentTenant,
-    createEnvironmentTenant_BATCH,
-    updateEnvironmentTenantParametersById,
-    updateEnvironmentTenantParametersByCode,
-    removeEnvironmentTenantById,
-    removeEnvironmentTenantByCode,
-    createCustomer,
-    createCustomer_BATCH,
-    updateCustomer,
-    removeCustomerById,
-    removeCustomerByCode,
-    createCustomerContact,
-    createCustomerContact_BATCH,
-    updateCustomerContact,
-    removeCustomerContact,
-    createArchitectureTier,
-    updateArchitectureTier,
-    removeArchitectureTier,
-    createComponentTemplate,
-    removeComponentTemplate,
-    createComponentInstance,
-    removeComponentInstance,
-    createComponentAttribute,
-    removeComponentAttributeById,
-    removeComponentAttributeByParameter,
-    createTenantAttribute,
-    removeTenantAttributeById,
-    removeTenantAttributeByParameter,
-    createArchitectureType,
-    updateArchitectureType,
-    removeArchitectureType,
-    createArchitectureDefinition,
-    updateArchitectureDefinitionParameters,
-    removeArchitectureDefinition
+
+    // Environment CI
+    // createEnvironment,
+    // createEnvironmentObj,
+    // updateEnvironmentParametersById,
+    // updateEnvironmentParametersByCode,
+    // removeEnvironmentById,
+    // removeEnvironmentByCode,
+
+    // Environment Tenant CI
+    // createEnvironmentTenant,
+    // createEnvironmentTenantObj,
+    // updateEnvironmentTenantParametersById,
+    // updateEnvironmentTenantParametersByCode,
+    // removeEnvironmentTenantById,
+    // removeEnvironmentTenantByCode,
+
+    // Customer CI
+    // createCustomer,
+    // createCustomerObj,
+    // updateCustomer,
+    // removeCustomerById,
+    // removeCustomerByCode,
+
+    // Customer Contact CI
+    // createCustomerContact,
+    // createCustomerContactObj,
+    // updateCustomerContact,
+    // removeCustomerContact,
+
+
+
+    // createArchitectureTier,
+    // updateArchitectureTier,
+    // removeArchitectureTier,
+    // createComponentTemplate,
+    // removeComponentTemplate,
+    // createComponentInstance,
+    // removeComponentInstance,
+    // createComponentAttribute,
+    // removeComponentAttributeById,
+    // removeComponentAttributeByParameter,
+    // createTenantAttribute,
+    // removeTenantAttributeById,
+    // removeTenantAttributeByParameter,
+    // createArchitectureType,
+    // updateArchitectureType,
+    // removeArchitectureType,
+    // createArchitectureDefinition,
+    // updateArchitectureDefinitionParameters,
+    // removeArchitectureDefinition,
   }

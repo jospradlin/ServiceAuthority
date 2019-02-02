@@ -43,7 +43,7 @@ type Service {
   version: String
   canBeRemoved: Boolean! @default(value: "true")
   dependentServices: [Service!]!
-  # environments: [Environment!]!
+  environments: [Environment!]!
   # owner: User
   # tenant: Tenant!
 }
@@ -54,9 +54,9 @@ type Customer {
   updatedAt: DateTime!
   name: String!
   code: String! @unique
-  status: String @default(value: "active")
-  # contacts: [CustomerContact!]!
-  # tenants: [EnvironmentTenant!]!
+  status: String! @default(value: "active")
+  contacts: [CustomerContact!]!
+  tenants: [EnvironmentTenant!]!
 }
 
 type CustomerContact {
@@ -70,19 +70,19 @@ type CustomerContact {
   customer: Customer!
 }
 
-# type EnvironmentTenant {
-#   id: ID! @unique
-#   createdAt: DateTime!
-#   updatedAt: DateTime!
-#   name: String!
-#   code: String! @unique
-#   class: String
-#   primaryContactEmail: String
-#   tenantCreationDate: DateTime
-#   customer: Customer!
-#   environment: Environment!
-#   attributes: [TenantAttribute!]!
-# }
+type EnvironmentTenant {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  code: String! @unique
+  class: String
+  primaryContactEmail: String
+  tenantCreationDate: DateTime
+  customer: Customer!
+  environment: Environment!
+  # attributes: [TenantAttribute!]!
+}
 
 
 type Environment {
@@ -95,7 +95,7 @@ type Environment {
   region: String
   classification: String!
   service: Service!
-  # tenants: [EnvironmentTenant!]!
+  tenants: [EnvironmentTenant!]!
   # components: [ComponentInstance!]!
 }
 

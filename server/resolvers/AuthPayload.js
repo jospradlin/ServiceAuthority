@@ -1,22 +1,9 @@
-// mutation {
-//   login(
-//     email: "sarah@graph.cool"
-//     password: "graphql"
-//   ) {
-//     token
-//     user {
-//       id
-//       name
-//       links {
-//         url
-//         description
-//       }
-//     }
-//   }
-// }
 
-function user(root, args, context, info) {
-  return context.db.query.user({ where: { id: root.user.id } }, info)
-}
+const user = async (root, args, context) => {
+  return context.prisma.user({
+    id: root.user.id
+  })
+};
+
 
 module.exports = { user }
