@@ -1,0 +1,178 @@
+######Service Tests
+query allServices{
+  services {
+    id
+    name
+		status
+		type
+  	createdAt
+    updatedAt
+  }
+}
+
+query allEnvironments{
+  environments {
+    id
+    name
+    service {
+      id
+      code
+      name
+    }
+		tenants {
+      id
+      name
+      code
+    }
+  	createdAt
+    updatedAt
+  }
+}
+
+
+query allCustomers{
+  customers {
+    id
+    name
+		status
+    contacts {
+      id
+      name
+      email
+    }
+  	createdAt
+    updatedAt
+  }
+}
+
+query allTenants{
+  environmentTenants {
+    id
+    name
+    class
+    primaryContactEmail
+    tenantCreationDate
+    environment {
+      id
+      name
+    }
+    customer {
+      id
+      name
+    }
+  	createdAt
+    updatedAt
+  }
+}
+
+mutation removeService{
+	removeServiceByCode(code: "test") {
+    id
+  }
+}
+
+mutation removeCustomer {
+	removeCustomerByCode(code: "test") {
+    id
+  }
+}
+
+mutation removeEnvironment {
+	removeEnvironmentByCode(code: "test") {
+    id
+  }
+}
+
+mutation removeTenantById {
+	removeEnvironmentTenantById(id: "cjrqs7lhk01o90830jj6uosyg") {
+    id
+  }
+}
+
+mutation removeTenantByCode {
+	removeEnvironmentTenantByCode(code: "t3code") {
+    id
+  }
+}
+
+
+
+mutation createService {
+  createService(name:"test", code:"test", status:"active", type:"core") {
+    id
+    name
+    code 
+  }
+}
+
+mutation createEnvironment {
+  createEnvironment(name:"test", code:"test", classification:"prod",
+  	serviceCode: "test") {
+    id
+    name
+    code
+    classification
+  }
+}
+
+mutation createCustomer {
+  createCustomer(name:"test", code:"test", status:"active") {
+    id
+    name
+    code
+  }
+}
+
+
+mutation createTenantNormal{
+  createEnvironmentTenant(name: "test1", code: "t1"
+  	class: "dev", primaryContactEmail:"do we need this?", tenantCreationDate: "2017-09-01", customerCode: "test", environmentCode:"test") {
+    id
+    name
+    class
+    primaryContactEmail
+    # tenantCreationDate
+    # customer {
+    #   id
+    #   name
+    # }
+    # environment {
+    #   name
+    #   code
+    #   classification
+    # }
+  }
+}
+
+mutation createTenantObj{
+  createEnvironmentTenantByObj( environmentTenantObject: { name: "test2", code: "t2"
+  	class: "prod", primaryContactEmail:"do we need this?", tenantCreationDate:"2017"}, customer: {code: "test"}, environment: {code: "test"} ) {
+    id
+    name
+    class
+    primaryContactEmail
+    customer {
+      id
+      name
+    }
+    environment {
+      name
+      code
+      classification
+    }
+  }
+}
+
+mutation updateTenantById{
+  updateEnvironmentTenantById( id: "cjrqs7lhk01o90830jj6uosyg", environmentTenantObject: {name: "test3id", code: "t3id"
+  	class: "dev-not", primaryContactEmail:"do we need this?YESYESYES" } ) {
+    id
+  }
+}
+
+mutation updateTenantByEmail{
+  updateEnvironmentTenantByCode( code: "t2", environmentTenantObject: { name: "test3code", code: "t3code"
+  	class: "prod-YEP!", primaryContactEmail:"do we need this?NONONONO" } ) {
+    id
+  }
+}

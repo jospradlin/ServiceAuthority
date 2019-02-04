@@ -26,6 +26,8 @@ type Mutation {
   # User Mutations
   signup(email: String!, password: String!, name: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
+  removeUserById( id: ID! ): User
+  removeUserByCode( code: String! ): User
 
   ##################### Configuration Management #####################
   ## - Service, Environments, Environment Tenants, and Customers #####
@@ -39,31 +41,36 @@ type Mutation {
   removeServiceByCode( code: String! ): Service
 
   ### Environment ###
-  createEnvironment( environmentObject: EnvironmentInput!, service: ObjectQueryInput! ): Environment
-  createEnvironment_BATCH( name: String!, code: String!, description: String, classification: String!, region: String, serviceCode: String! ): Environment
-  updateEnvironmentParametersById( environmentObject: EnvironmentInput, environmentId: ID! ): Environment
-  updateEnvironmentParametersByCode( environmentObject: EnvironmentInput, environmentCode: String! ): Environment
-  removeEnvironmentById ( environmentId: ID! ): Environment
-  removeEnvironmentByCode( environmentCode: String! ): Environment
+  createEnvironmentByObj( environmentObject: EnvironmentInput!, service: ObjectQueryInput! ): Environment
+  createEnvironment( name: String!, code: String!, description: String, classification: String!, region: String, serviceCode: String! ): Environment
+  updateEnvironmentById( id: ID!, environmentObject: EnvironmentInput): Environment
+  updateEnvironmentByCode( code: String!, environmentObject: EnvironmentInput): Environment
+  removeEnvironmentById ( id: ID! ): Environment
+  removeEnvironmentByCode( code: String! ): Environment
 
   ### Environment Tenant ###
-  createEnvironmentTenant( environmentTenantObject: EnvironmentTenantInput!, customerCode: String!, environmentCode: String! ): EnvironmentTenant
-  createEnvironmentTenant_BATCH( name: String!, code: String!, class: String, primaryContactEmail: String, tenantCreationDate: DateTime, customerCode: String!, environmentCode: String! ): EnvironmentTenant
-  updateEnvironmentTenantParametersById( tenantId: ID!, environmentTenantObject: EnvironmentTenantInput! ): EnvironmentTenant
-  updateEnvironmentTenantParametersByCode( tenantCode: String!, environmentTenantObject: EnvironmentTenantInput! ): EnvironmentTenant
-  removeEnvironmentTenantById( tenantId: ID! ): EnvironmentTenant
-  removeEnvironmentTenantByCode( tenantCode: String! ): EnvironmentTenant
+  createEnvironmentTenantByObj( environmentTenantObject: EnvironmentTenantInput!, customer: ObjectQueryInput!, environment: ObjectQueryInput! ): EnvironmentTenant
+  createEnvironmentTenant( name: String!, code: String!, class: String, primaryContactEmail: String, tenantCreationDate: DateTime, customerCode: String!, environmentCode: String! ): EnvironmentTenant
+  updateEnvironmentTenantById( id: ID!, environmentTenantObject: EnvironmentTenantInput! ): EnvironmentTenant
+  updateEnvironmentTenantByCode( code: String!, environmentTenantObject: EnvironmentTenantInput! ): EnvironmentTenant
+  removeEnvironmentTenantById( id: ID! ): EnvironmentTenant
+  removeEnvironmentTenantByCode( code: String! ): EnvironmentTenant
 
-  ### Customer and Customer Contact ###
-  createCustomer( customer: CustomerInput! ): Customer
-  createCustomer_BATCH( name: String!, code: String!, status: String!): Customer
-  updateCustomer( customerId: ID!, customer: CustomerInput! ): Customer
-  removeCustomerById( customerId: ID! ): Customer
-  removeCustomerByCode( customerCode: String! ): Customer
-  createCustomerContact( customerContact: CustomerContactInput!, customerCode: String! ): CustomerContact
-  createCustomerContact_BATCH( name: String!, email: String!, phone: String, sms: String, customerCode: String! ): CustomerContact
-  updateCustomerContact( customerContact: CustomerContactInput!, contactId: ID! ): CustomerContact
-  removeCustomerContact( contactId: ID! ): CustomerContact
+  ### Customer ###
+  createCustomerByObj( customerObject: CustomerInput! ): Customer
+  createCustomer( name: String!, code: String!, status: String! ): Customer
+  updateCustomerById( id: ID!, customerObject: CustomerInput ): Customer
+  updateCustomerByCode( code: String!, customerObject: CustomerInput ): Customer
+  removeCustomerById( id: ID! ): Customer
+  removeCustomerByCode( code: String! ): Customer
+
+  ### Customer Contact ###
+  createCustomerContactByObj( contactObject: CustomerContactInput!, customer: ObjectQueryInput! ): CustomerContact
+  createCustomerContact( name: String!, email: String!, phone: String, sms: String, customerCode: String! ): CustomerContact
+  updateCustomerContactById( id: ID!, contactObject: CustomerContactInput): CustomerContact
+  updateCustomerContactByEmail( email: String!, contactObject: CustomerContactInput): CustomerContact
+  removeCustomerContactById ( id: ID! ): CustomerContact
+  removeCustomerContactByEmail( email: String! ): CustomerContact
 
 }
 

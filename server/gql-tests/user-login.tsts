@@ -1,0 +1,31 @@
+mutation signup {
+  signup ( email: "jos3@gmail.com", password: "yes", name: "Nope Jones"){
+		token
+  }
+}
+
+mutation removeUserId {
+  removeUserById (id: "cjrqn1mv5016608303shaq0iq"){
+		id
+    name
+  }
+}
+
+mutation login {
+  login(email: "jos3@gmail.com", password:"yes" ) {
+    token
+    user {
+      name
+			id
+    }
+  }
+}
+
+query allUsers {
+  users{
+    id
+    name
+    email
+  }
+}
+

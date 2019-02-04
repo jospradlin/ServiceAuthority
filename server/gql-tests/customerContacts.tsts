@@ -1,0 +1,93 @@
+######Service Tests
+query allCustomers{
+  customers {
+    id
+    name
+		status
+    contacts {
+      id
+      name
+      email
+    }
+  	createdAt
+    updatedAt
+  }
+}
+
+query allContacts{
+  customerContacts {
+    id
+    name
+    email
+    phone
+    sms
+    customer {
+      id
+      name
+    }
+  	createdAt
+    updatedAt
+  }
+}
+
+mutation removeCustomer {
+	removeCustomerByCode(code: "test") {
+    id
+  }
+}
+
+mutation removeContactBId {
+	removeCustomerContactById(id: "cjrqqetk101e80830b9z949z2") {
+    id
+  }
+}
+
+mutation removeContactBEmail {
+	removeCustomerContactByEmail(email: "jos3code@gmail.com") {
+    id
+  }
+}
+
+
+
+
+mutation createCustomer {
+  createCustomer(name:"test", code:"test", status:"active") {
+    id
+    name
+    code
+  }
+}
+
+
+mutation createContactNormal{
+  createCustomerContact(name: "test1", email: "jos@gmail.com"
+  	phone:"123-456-7890", sms:"YES", customerCode: "test") {
+    id
+    name
+    email
+    sms
+    phone
+  }
+}
+
+mutation createContactObj{
+  createCustomerContactByObj( contactObject: { name: "test2", email: "jos2@gmail.com"
+  	phone:"999-456-7890", sms:"YES" }, customer: {code: "test"} ) {
+    id
+  }
+}
+
+mutation updateContactById{
+  updateCustomerContactById( id: "cjrqqetk101e80830b9z949z2", contactObject: {name: "test3id", email: "jos3id@gmail.com"
+  	phone:"444-456-7890", sms:"NO_SIR" } ) {
+    id
+  }
+}
+
+mutation updateEnvironmentByEmail{
+  updateCustomerContactByEmail( email: "jos2@gmail.com", contactObject: { name: "test3code", email: "jos3code@gmail.com"
+  	phone:"666-456-7890", sms:"YES_SIR" } ) {
+    id
+  }
+}

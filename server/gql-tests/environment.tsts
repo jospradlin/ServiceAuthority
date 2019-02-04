@@ -1,0 +1,82 @@
+######Service Tests
+query allEnvs{
+  environments {
+    id
+    code
+    name
+    description
+    region
+    classification
+    service {
+      id
+      name
+      code
+    }
+    tenants {
+      id
+      name
+    }
+  	createdAt
+    updatedAt
+  }
+}
+
+mutation removeService {
+	removeServiceByCode(code: "test") {
+    id
+  }
+}
+
+mutation removeEnvironmentBId {
+	removeEnvironmentById(id: "cjrqnf1hx016s0830gspxioxe") {
+    id
+  }
+}
+
+mutation removeEnvironmentBCode {
+	removeEnvironmentByCode(code: "test3code") {
+    id
+  }
+}
+
+
+
+
+mutation createService {
+  createService(name:"test", code:"test", status:"active", type:"core") {
+    id
+    name
+    code
+  }
+}
+
+
+mutation createEnvironmentNormal{
+  createEnvironment(name: "test1", code: "test1code",
+  	description:"testenvdesc1", region:"US", classification:"Prod", serviceCode: "test") {
+    id
+    name
+    code
+  }
+}
+
+mutation createEnvironmentObj{
+  createEnvironmentByObj( environmentObject: { name: "test2", code: "test2code",
+  	description:"testenvdesc1", region:"US", classification:"Prod" }, service: {code: "test"} ) {
+    id
+  }
+}
+
+mutation updateEnvironmentById{
+  updateEnvironmentById( id: "cjrqnf1hx016s0830gspxioxe", environmentObject: { name: "test3id", code: "test3id",
+  	description:"testenvdesc1", region:"USA", classification:"TEST" } ) {
+    id
+  }
+}
+
+mutation updateEnvironmentByCode{
+  updateEnvironmentByCode( code: "test2code", environmentObject: { name: "test3code", code: "test3code",
+  	description:"testenvdesc1", region:"USB", classification:"DEV" } ) {
+    id
+  }
+}

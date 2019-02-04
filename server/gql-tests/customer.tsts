@@ -1,0 +1,56 @@
+######Service Tests
+query allCustomers{
+  customers {
+    id
+    code
+    name
+    status
+    createdAt
+  	updatedAt
+    contacts {
+      id
+      name
+    }
+  }
+}
+
+mutation removeA {
+	removeCustomerByCode(code: "test3code") {
+    id
+  }
+}
+
+mutation removeB {
+	removeCustomerById(id: "cjrqo5t7801b60830c7mysl08") {
+    id
+  }
+}
+
+
+mutation createCustomerNormal{
+  createCustomer(name: "test1", code: "test1code",
+  	status: "active") {
+    id
+  }
+}
+
+mutation createCustomerObj{
+  createCustomerByObj( customerObject: { name: "test2", code: "test2code",
+  	status: "active" } ) {
+    id
+  }
+}
+
+mutation updateCustomerById{
+  updateCustomerById( id: "cjrqo5t7801b60830c7mysl08", customerObject: { name: "test3id", code: "test3id",
+  	status: "inactive" } ) {
+    id
+  }
+}
+
+mutation updateCustomerByCode{
+  updateCustomerByCode( code: "test1code", customerObject: { name: "test3code", code: "test3code",
+  	status: "not_active" } ) {
+    id
+  }
+}

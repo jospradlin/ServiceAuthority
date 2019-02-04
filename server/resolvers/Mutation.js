@@ -111,43 +111,34 @@ const updateServiceByCode = async (root, args, context) => {
   )
 };
 
-
-/// REMOVED FOR NOW -- BASED ON API DESIGN
-// const removeService = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   if (args.service && !args.service.id && !args.service.code) {
-//     throw new Error(`A Service ID or Code must be provided to remove a Service.`);
-//   }
-
-//   let service;
-//   if (args.service && args.service.code) {
-//     service = await context.db.mutation.deleteService(
-//       {
-//         where: {
-//           code: args.service.code
-//         }
-//       },
-//       info,
-//     );
-//   } else {
-//     service = await context.db.mutation.deleteService(
-//       {
-//         where: {
-//           id: args.service.id
-//         }
-//       },
-//       info,
-//     );
-//   }
-
-//   return service;
-// };
-
-
-
 // Environment
-const createEnvironment = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
+const createEnvironment = async (root, args, context) => {
+  // const userId = getUserId(context)
+  console.log(args);
+
+  const serviceId = await context.prisma.service( {code: args.serviceCode} );
+
+  if (!serviceId) {
+    throw new Error(`No Node for the model Service with value ${args.serviceCode} for code found.`);
+  }
+
+  return await context.prisma.createEnvironment({
+      name: args.name,
+      code: args.code,
+      description: args.description,
+      classification: args.classification,
+      region: args.region,
+      service: {
+        connect: {
+          id: serviceId.id
+        }
+      }
+    }
+  );
+};
+
+const createEnvironmentByObj = async (root, args, context) => {
+  // const userId = getUserId(context)
   console.log(args);
 
   let serviceIdentifier = args.service.id;
@@ -156,11 +147,7 @@ const createEnvironment = async (parent, args, context, info) => {
   }
 
   if (args.service && args.service.code) {
-    const serviceId = await context.db.query.service({
-      where: {
-        code: args.service.code
-      }
-    }, info);
+    const serviceId = await context.prisma.service({ code: args.service.code });
 
     if (!serviceId) {
       throw new Error(`No Node for the model Service with value ${args.service.code} for code found.`);
@@ -169,455 +156,294 @@ const createEnvironment = async (parent, args, context, info) => {
   }
 
   console.log(`Service ID: ${serviceIdentifier}`);
-  const environment = await context.db.mutation.createEnvironment(
+  return await context.prisma.createEnvironment(
     {
-      data: {
-        name: args.environmentObject.name,
-        code: args.environmentObject.code,
-        description: args.environmentObject.description,
-        classification: args.environmentObject.classification,
-        region: args.environmentObject.region,
-        service: {
-          connect: {
-            id: serviceIdentifier
-          }
+      ...args.environmentObject,
+      service: {
+        connect: {
+          id: serviceIdentifier
         }
-
       }
-    },
-    info,
-  );
 
-  return environment;
+    }
+  );
 };
 
-const createEnvironment_BATCH = async (parent, args, context, info) => {
+const removeEnvironmentById = async (root, args, context) => {
   //const userId = getUserId(context)
-  console.log(args);
-
-  const serviceId = await context.db.query.service({
-      where: {
-        code: args.serviceCode
-      }
-    }, info);
-
-  if (!serviceId) {
-      throw new Error(`No Node for the model Service with value ${args.serviceCode} for code found.`);
-  }
-  
-  const environment = await context.db.mutation.createEnvironment(
-    {
-      data: {
-        name: args.name,
-        code: args.code,
-        description: args.description,
-        classification: args.classification,
-        region: args.region,
-        service: {
-          connect: {
-            id: serviceId.id
-          }
-        }
-
-      }
-    },
-    info,
-  );
-
-  return environment;
+  return await context.prisma.deleteEnvironment({ id: args.id })
 };
 
-const updateEnvironmentParametersById = async (parent, args, context, info) => {
+const removeEnvironmentByCode = async (root, args, context) => {
   //const userId = getUserId(context)
-  console.log(args);
-  const environment = await context.db.mutation.updateEnvironment(
-    {
-      data: {
-        ...args.environmentObject
-      },
-      where: {
-        id: args.id
-      }
-    },
-    info,
-  );
-
-  return environment;
+  return await context.prisma.deleteEnvironment({ code: args.code })
 };
 
-const updateEnvironmentParametersByCode = async (parent, args, context, info) => {
+const updateEnvironmentById = async (root, args, context) => {
   //const userId = getUserId(context)
-  console.log(args);
-  const environment = await context.db.mutation.updateEnvironment(
+  return await context.prisma.updateEnvironment(
     {
-      data: {
-        ...args.environmentObject
-      },
-      where: {
-        code: args.code
-      }
+      where: { id: args.id },
+      data: { ...args.environmentObject },
     },
-    info,
-  );
-
-  return environment;
+  )
 };
 
-const removeEnvironmentById = async (parent, args, context, info) => {
+const updateEnvironmentByCode = async (root, args, context) => {
   //const userId = getUserId(context)
-  const environment = await context.db.mutation.deleteEnvironment(
+  return await context.prisma.updateEnvironment(
     {
-      where: {
-        id: args.environmentId
-      }
+      where: { code: args.code },
+      data: { ...args.environmentObject },
     },
-    info,
-  );
-
-  return environment;
-};
-
-const removeEnvironmentByCode = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  const environment = await context.db.mutation.deleteEnvironment(
-    {
-      where: {
-        code: args.environmentCode
-      }
-    },
-    info,
-  );
-
-  return environment;
+  )
 };
 
 
 // Environment Tenant
-const createEnvironmentTenant = async (parent, args, context, info) => {
+const createEnvironmentTenantByObj = async (root, args, context) => {
   //const userId = getUserId(context)
   console.log(args);
 
-  const customerId = await context.db.query.customer({
-    where: {
-      code: args.customerCode
+  let customerIdentifier = args.customer.id;
+  if (args.customer && !args.customer.id && !args.customer.code) {
+    throw new Error(`A Customer ID or Code must be provided to create an Environment Tenant.`);
+  }
+
+  if (args.customer && args.customer.code) {
+    const customerId = await context.prisma.customer({ code: args.customer.code });
+
+    if (!customerId) {
+      throw new Error(`No Node for the model Customer with value ${args.customer.code} for code found.`);
     }
-  }, info);
+    customerIdentifier = customerId.id;
+  }
 
-  const environmentId = await context.db.query.environment({
-    where: {
-      code: args.environmentCode
+  console.log(`Customer ID: ${customerIdentifier}`);
+
+  let environmentIdentifier = args.environment.id;
+  if (args.environment && !args.environment.id && !args.environment.code) {
+    throw new Error(`A Environment ID or Code must be provided to create an Environment Tenant.`);
+  }
+
+  if (args.environment && args.environment.code) {
+    const environmentId = await context.prisma.environment({ code: args.environment.code });
+
+    if (!environmentId) {
+      throw new Error(`No Node for the model Environment with value ${args.environment.code} for code found.`);
     }
-  }, info);
+    environmentIdentifier = environmentId.id;
+  }
 
+  console.log(`EnvironmentId ID: ${environmentIdentifier}`);
 
-  const tenant = await context.db.mutation.createEnvironmentTenant(
-    {
-      data: {
+  return await context.prisma.createEnvironmentTenant({
         ...args.environmentTenantObject,
         customer: {
           connect: {
-            id: customerId.id
+            id: customerIdentifier
           }
         },
         environment: {
           connect: {
-            id: environmentId.id
+            id: environmentIdentifier
           }
         }
-
-      }
-    },
-    info,
-  );
-
-  return tenant;
+  });
 };
 
-const createEnvironmentTenant_BATCH = async (parent, args, context, info) => {
+const createEnvironmentTenant = async (root, args, context) => {
   //const userId = getUserId(context)
   console.log(args);
 
-  const customerId = await context.db.query.customer({
-    where: {
-      code: args.customerCode
+  const customerId = await context.prisma.customer( {code: args.customerCode} );
+  const environmentId = await context.prisma.environment( {code: args.environmentCode} );
+  return await context.prisma.createEnvironmentTenant({
+    name: args.name,
+    code: args.code,
+    class: args.class,
+    primaryContactEmail: args.primaryContactEmail,
+    tenantCreationDate: args.tenantCreationDate,
+    customer: {
+      connect: {
+        id: customerId.id
+      }
+    },
+    environment: {
+      connect: {
+        id: environmentId.id
+      }
     }
-  }, info);
+  });
+};
 
-  const environmentId = await context.db.query.environment({
-    where: {
-      code: args.environmentCode
-    }
-  }, info);
+const removeEnvironmentTenantById = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.deleteEnvironmentTenant({ id: args.id })
+};
 
+const removeEnvironmentTenantByCode = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.deleteEnvironmentTenant({ code: args.code })
+};
 
-  const tenant = await context.db.mutation.createEnvironmentTenant(
+const updateEnvironmentTenantById = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.updateEnvironmentTenant(
     {
-      data: {
-        name: args.name,
-        code: args.code,
-        class: args.class,
-        primaryContactEmail: args.primaryContactEmail,
-        tenantCreationDate: args.tenantCreationDate,
-        customer: {
-          connect: {
-            id: customerId.id
-          }
-        },
-        environment: {
-          connect: {
-            id: environmentId.id
-          }
+      where: { id: args.id },
+      data: { ...args.environmentTenantObject },
+    },
+  )
+};
+
+const updateEnvironmentTenantByCode = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.updateEnvironmentTenant(
+    {
+      where: { code: args.code },
+      data: { ...args.environmentTenantObject },
+    },
+  )
+};
+
+// Customer
+const createCustomer = async (root, args, context) => {
+  // const userId = getUserId(context)
+  return await context.prisma.createCustomer(
+    {
+      ...args
+    }
+  )
+};
+
+const createCustomerByObj = async (root, args, context) => {
+  // const userId = getUserId(context)
+  return await context.prisma.createCustomer({ ...args.customerObject })
+};
+
+const removeCustomerById = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.deleteCustomer({ id: args.id })
+};
+
+const removeCustomerByCode = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.deleteCustomer({ code: args.code })
+};
+
+const updateCustomerById = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.updateCustomer(
+    {
+      where: { id: args.id },
+      data: { ...args.customerObject },
+    },
+  )
+};
+
+const updateCustomerByCode = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.updateCustomer(
+    {
+      where: { code: args.code },
+      data: { ...args.customerObject },
+    },
+  )
+};
+
+
+// Customer Contact
+const createCustomerContact = async (root, args, context) => {
+  // const userId = getUserId(context)
+  console.log(args);
+
+  const customerId = await context.prisma.customer({ code: args.customerCode });
+
+  if (!customerId) {
+    throw new Error(`No Node for the model Customer with value ${args.customerCode} for code found.`);
+  }
+
+  return await context.prisma.createCustomerContact({
+    name: args.name,
+    email: args.email,
+    phone: args.phone,
+    sms: args.sms,
+    customer: {
+      connect: {
+        id: customerId.id
+      }
+    }
+  }
+  );
+};
+
+const createCustomerContactByObj = async (root, args, context) => {
+  // const userId = getUserId(context)
+  console.log(args);
+
+  let customerIdentifier = args.customer.id;
+  if (args.customer && !args.customer.id && !args.customer.code) {
+    throw new Error(`A Customer ID or Code must be provided to create a Customer Contact.`);
+  }
+
+  if (args.customer && args.customer.code) {
+    const customerId = await context.prisma.customer({ code: args.customer.code });
+
+    if (!customerId) {
+      throw new Error(`No Node for the model Customer with value ${args.customer.code} for code found.`);
+    }
+    customerIdentifier = customerId.id;
+  }
+
+  console.log(`Customer ID: ${customerIdentifier}`);
+  return await context.prisma.createCustomerContact(
+    {
+      ...args.contactObject,
+      customer: {
+        connect: {
+          id: customerIdentifier
         }
-
       }
-    },
-    info,
-  );
 
-  return tenant;
-};
-
-const updateEnvironmentTenantParametersById = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  console.log(args);
-
-  const tenant = await context.db.mutation.updateEnvironmentTenant(
-    {
-      data: {
-        ...args.environmentTenantObject
-      },
-      where: {
-        id: args.id
-      }
-    },
-    info,
-  );
-
-  return tenant;
-};
-
-const updateEnvironmentTenantParametersByCode = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  console.log(args);
-
-  const tenant = await context.db.mutation.updateEnvironmentTenant(
-    {
-      data: {
-        ...args.environmentTenantObject
-      },
-      where: {
-        code: args.code
-      }
-    },
-    info,
-  );
-
-  return tenant;
-};
-
-
-
-const removeEnvironmentTenantById = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  const tenant = await context.db.mutation.deleteEnvironmentTenant(
-    {
-      where: {
-        id: args.tenantId
-      }
-    },
-    info,
-  );
-
-  return tenant;
-};
-
-const removeEnvironmentTenantByCode = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  const tenant = await context.db.mutation.deleteEnvironmentTenant(
-    {
-      where: {
-        code: args.tenantCode
-      }
-    },
-    info,
-  );
-
-  return tenant;
-};
-
-const createCustomer = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  console.log(args);
-
-  const customer = await context.db.mutation.createCustomer(
-    {
-      data: {
-        ...args.customer
-      }
-    },
-    info,
-  );
-
-  return customer;
-};
-
-const createCustomer_BATCH = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  console.log(args);
-
-  const customer = await context.db.mutation.createCustomer(
-    {
-      data: {
-        ...args
-      }
-    },
-    info,
-  );
-
-  return customer;
-};
-
-const updateCustomer = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  console.log(args);
-
-  const customer = await context.db.mutation.createCustomer(
-    {
-      data: {
-        ...args.customer
-      },
-      where: {
-        id: args.customerId
-      }
-    },
-    info,
-  );
-
-  return customer;
-};
-
-const removeCustomerById = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  const customer = await context.db.mutation.deleteCustomer(
-    {
-      where: {
-        id: args.customerId
-      }
-    },
-    info,
-  );
-
-  return customer;
-};
-
-const removeCustomerByCode = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  const customer = await context.db.mutation.deleteCustomer(
-    {
-      where: {
-        code: args.customerCode
-      }
-    },
-    info,
-  );
-
-  return customer;
-};
-
-
-const createCustomerContact = async (parent, args, context, info) => {
-  //const userId = getUserId(context)
-  console.log(args);
-
-  const customerId = await context.db.query.customer({
-    where: {
-      code: args.customerCode
     }
-  }, info);
-
-  console.log(`Customer ID: ${customerId.id}`);
-
-  const customerContact = await context.db.mutation.createCustomerContact(
-    {
-      data: {
-        ...args.customerContact,
-        customer: {
-          connect: {
-            id: customerId.id
-          }
-        }
-
-      }
-    },
-    info,
   );
-
-  return customerContact;
 };
 
-const createCustomerContact_BATCH = async (parent, args, context, info) => {
+const removeCustomerContactById = async (root, args, context) => {
   //const userId = getUserId(context)
-  console.log(args);
-
-  const customerId = await context.db.query.customer({
-    where: {
-      code: args.customerCode
-    }
-  }, info);
-
-  console.log(`Service ID: ${customerId.id}`);
-
-  const customerContact = await context.db.mutation.createCustomerContact(
-    {
-      data: {
-        name: args.name,
-        email: args.email,
-        phone: args.phone,
-        sms: args.sms,
-        customer: {
-          connect: {
-            id: customerId.id
-          }
-        }
-
-      }
-    },
-    info,
-  );
-
-  return customerContact;
+  return await context.prisma.deleteCustomerContact({ id: args.id })
 };
 
-const updateCustomerContact = async (parent, args, context, info) => {
+const removeCustomerContactByEmail = async (root, args, context) => {
   //const userId = getUserId(context)
-  const customerContact = await context.db.mutation.updateCustomerContact(
-    {
-      data: {
-        ...args.customerContact
-      },
-      where: {
-        id: args.contactId
-      }
-    },
-    info,
-  );
-
-  return customerContact;
+  return await context.prisma.deleteCustomerContact({ email: args.email })
 };
 
-const removeCustomerContact = async (parent, args, context, info) => {
+const updateCustomerContactById = async (root, args, context) => {
   //const userId = getUserId(context)
-  const customerContact = await context.db.mutation.deleteCustomerContact(
+  return await context.prisma.updateCustomerContact(
     {
-      where: {
-        id: args.contactId
-      }
+      where: { id: args.id },
+      data: { ...args.contactObject },
     },
-    info,
-  );
-
-  return customerContact;
+  )
 };
+
+const updateCustomerContactByEmail = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.updateCustomerContact(
+    {
+      where: { email: args.email },
+      data: { ...args.contactObject },
+    },
+  )
+};
+
+
+//////  UN-TESTED
+
+
 
 const createArchitectureTier = async (parent, args, context, info) => {
   //const userId = getUserId(context)
@@ -1029,6 +855,12 @@ const login = async (root, args, context) => {
   }
 };
 
+const removeUserById = async (root, args, context) => {
+  //const userId = getUserId(context)
+  return await context.prisma.deleteUser({ id: args.id })
+};
+
+
 
 // async function signup(parent, args, context, info) {
 //   // 1
@@ -1098,6 +930,7 @@ const login = async (root, args, context) => {
 module.exports = {
     signup,
     login,
+    removeUserById,
     // createTenant,
     // addUserToTenant,
     // removeUserFromTenant,
@@ -1111,34 +944,36 @@ module.exports = {
     removeServiceByCode,
 
     // Environment CI
-    // createEnvironment,
-    // createEnvironmentObj,
-    // updateEnvironmentParametersById,
-    // updateEnvironmentParametersByCode,
-    // removeEnvironmentById,
-    // removeEnvironmentByCode,
+    createEnvironment,
+    createEnvironmentByObj,
+    updateEnvironmentById,
+    updateEnvironmentByCode,
+    removeEnvironmentById,
+    removeEnvironmentByCode,
 
     // Environment Tenant CI
-    // createEnvironmentTenant,
-    // createEnvironmentTenantObj,
-    // updateEnvironmentTenantParametersById,
-    // updateEnvironmentTenantParametersByCode,
-    // removeEnvironmentTenantById,
-    // removeEnvironmentTenantByCode,
+    createEnvironmentTenant,
+    createEnvironmentTenantByObj,
+    updateEnvironmentTenantById,
+    updateEnvironmentTenantByCode,
+    removeEnvironmentTenantById,
+    removeEnvironmentTenantByCode,
 
     // Customer CI
-    // createCustomer,
-    // createCustomerObj,
-    // updateCustomer,
-    // removeCustomerById,
-    // removeCustomerByCode,
+    createCustomer,
+    createCustomerByObj,
+    updateCustomerById,
+    updateCustomerByCode,
+    removeCustomerById,
+    removeCustomerByCode,
 
     // Customer Contact CI
-    // createCustomerContact,
-    // createCustomerContactObj,
-    // updateCustomerContact,
-    // removeCustomerContact,
-
+    createCustomerContact,
+    createCustomerContactByObj,
+    updateCustomerContactById,
+    updateCustomerContactByEmail,
+    removeCustomerContactById,
+    removeCustomerContactByEmail,
 
 
     // createArchitectureTier,

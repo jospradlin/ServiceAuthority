@@ -5,13 +5,21 @@ const { prisma } = require('./generated/prisma-client')
 const Query = require('./resolvers/Query');
 const Mutation = require('./resolvers/Mutation');
 const Service = require('./resolvers/Service');
+const Environment = require('./resolvers/Environment');
+const EnvironmentTenant = require('./resolvers/EnvironmentTenant');
+const Customer = require('./resolvers/Customer');
+const CustomerContact = require('./resolvers/CustomerContact');
 const AuthPayload = require('./resolvers/AuthPayload');
 
 const resolvers = {
     Query,
     Mutation,
-    Service,
     AuthPayload,
+    Service,
+    Environment,
+    Customer,
+    CustomerContact,
+    EnvironmentTenant,
     // },
     // // 3
     // Service: {
