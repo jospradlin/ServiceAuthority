@@ -68,7 +68,7 @@ const { APP_SECRET, getUserId } = require('../utils/utils');
 
 // Service
 const createService = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.createService(
     {
       ...args
@@ -77,22 +77,22 @@ const createService = async (root, args, context) => {
 };
 
 const createServiceByObj = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
     return await context.prisma.createService({...args.serviceObject})
 };
 
 const removeServiceById = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.deleteService({ id: args.id })
 };
 
 const removeServiceByCode = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.deleteService({ code: args.code })
 };
 
 const updateServiceById = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.updateService(
     {
       where: { id: args.id },
@@ -102,7 +102,7 @@ const updateServiceById = async (root, args, context) => {
 };
 
 const updateServiceByCode = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.updateService(
     {
       where: { code: args.code },
@@ -113,7 +113,7 @@ const updateServiceByCode = async (root, args, context) => {
 
 // Environment
 const createEnvironment = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   console.log(args);
 
   const serviceId = await context.prisma.service( {code: args.serviceCode} );
@@ -138,7 +138,7 @@ const createEnvironment = async (root, args, context) => {
 };
 
 const createEnvironmentByObj = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   console.log(args);
 
   let serviceIdentifier = args.service.id;
@@ -170,17 +170,17 @@ const createEnvironmentByObj = async (root, args, context) => {
 };
 
 const removeEnvironmentById = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.deleteEnvironment({ id: args.id })
 };
 
 const removeEnvironmentByCode = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.deleteEnvironment({ code: args.code })
 };
 
 const updateEnvironmentById = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.updateEnvironment(
     {
       where: { id: args.id },
@@ -190,7 +190,7 @@ const updateEnvironmentById = async (root, args, context) => {
 };
 
 const updateEnvironmentByCode = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.updateEnvironment(
     {
       where: { code: args.code },
@@ -835,7 +835,7 @@ const signup = async (root, args, context) => {
 
 const login = async (root, args, context) => {
   // 1
-  const user = await context.prisma.user({ email: args.email }, ` { id password } `)
+  const user = await context.prisma.user({ email: args.email }, `{ id password }`)
   if (!user) {
     throw new Error('No such user found')
   }
@@ -856,7 +856,7 @@ const login = async (root, args, context) => {
 };
 
 const removeUserById = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.deleteUser({ id: args.id })
 };
 

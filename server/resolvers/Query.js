@@ -5,32 +5,32 @@ const { getUserId } = require('../utils/utils');
 
 
 const service = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.service({ id: args.id })
 };
 
 const services = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.services()
 };
 
 const user = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.user({ id: args.id })
 };
 
 const users = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.users()
 };
 
 const environment = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.environment({ id: args.id })
 };
 
 const environments = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.environments()
 };
 
