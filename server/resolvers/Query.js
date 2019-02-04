@@ -35,103 +35,35 @@ const environments = async (root, args, context) => {
 };
 
 const environmentTenant = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.environmentTenant({ id: args.id })
 };
 
 const environmentTenants = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.environmentTenants()
 };
 
 const customer = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.customer({ id: args.id })
 };
 
 const customers = async (root, args, context) => {
-  //const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.customers()
 };
 
 const customerContact = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.customerContact({ id: args.id })
 };
 
 const customerContacts = async (root, args, context) => {
-  // const userId = getUserId(context)
+  const userId = getUserId(context)
   return await context.prisma.customerContacts()
 };
 
-// const users = async ( parent, args, context, info) => {
-//   const userId = getUserId(context)
-//   return context.db.query.users({}, info)
-// };
-
-// const user = async ( parent, args, context, info ) => {
-//   const userId = getUserId(context)
-//   return context.db.query.user({ where: {
-//     id: args.id
-//   }}, info)
-// };
-
-
-// const environments = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.environments({}, info)
-// };
-
-// const environment = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.environment({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
-
-// const environmentTenants = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.environmentTenants({}, info)
-// };
-
-// const environmentTenant = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.environmentTenant({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
-
-// const customers = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.customers({}, info)
-// };
-
-// const customer = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.customer({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
-
-// const customerContacts = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.customerContacts({}, info)
-// };
-
-// const customerContact = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.customerContact({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
 
 // const architectureTiers = async (parent, args, context, info) => {
 //   //const userId = getUserId(context)
