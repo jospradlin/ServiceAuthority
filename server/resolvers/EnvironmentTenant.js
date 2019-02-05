@@ -10,5 +10,11 @@ const customer = async (root, args, context) => {
     }).customer();
 };
 
+const attributes = async (root, args, context) => {
+    return context.prisma.environmentTenant({
+        id: root.id
+    }).attributes()
+};
 
-module.exports = { environment, customer }
+
+module.exports = { environment, customer, attributes }

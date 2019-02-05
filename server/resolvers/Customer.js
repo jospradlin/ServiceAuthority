@@ -4,4 +4,10 @@ const contacts = async (root, args, context) => {
     }).contacts();
 };
 
-module.exports = { contacts }
+const tenants = async (root, args, context) => {
+    return context.prisma.customer({
+        id: root.id
+    }).tenants()
+};
+
+module.exports = { contacts, tenants }

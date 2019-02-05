@@ -14,6 +14,16 @@ const services = async (root, args, context) => {
   return await context.prisma.services()
 };
 
+const tenant = async (root, args, context) => {
+  const userId = getUserId(context)
+  return await context.prisma.tenant({ id: args.id })
+};
+
+const tenants = async (root, args, context) => {
+  const userId = getUserId(context)
+  return await context.prisma.tenants()
+};
+
 const user = async (root, args, context) => {
   const userId = getUserId(context)
   return await context.prisma.user({ id: args.id })
@@ -64,122 +74,85 @@ const customerContacts = async (root, args, context) => {
   return await context.prisma.customerContacts()
 };
 
+const architectureTiers = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.architectureTiers()
+};
 
-// const architectureTiers = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.architectureTiers({}, info)
-// };
+const architectureTier = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.architectureTier( {id: args.id} )
+};
 
-// const architectureTier = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.architectureTier({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
+const componentTemplates = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.componentTemplates()
+};
 
-// const componentTemplates = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.componentTemplates({}, info)
-// };
+const componentTemplate = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.componentTemplate( {id: args.id} )
+};
 
-// const componentTemplate = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.componentTemplate({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
+const componentInstances = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.componentInstances()
+};
 
-// const componentInstances = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.componentInstances({}, info)
-// };
+const componentInstance = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.componentInstance( {id: args.id} )
+};
 
-// const componentInstance = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.componentInstance({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
+const componentAttributes = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.componentAttributes()
+};
 
-// const componentAttributes = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.componentAttributes({}, info)
-// };
+const componentAttributeById = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.componentAttribute( {id: args.id} )
+};
 
-// const componentAttributeById = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.componentAttribute({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
+const componentAttributeByParameter = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.componentAttribute( {parameter: args.parameter} )
+};
 
-// const componentAttributeByParameter = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.componentAttribute({
-//     where: {
-//       parameter: args.parameter
-//     }
-//   }, info)
-// };
+const tenantAttributes = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.tenantAttributes({}, info)
+};
 
-// const tenantAttributes = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.tenantAttributes({}, info)
-// };
+const tenantAttributeById = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.tenantAttribute({ id: args.id })
+};
 
-// const tenantAttributeById = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.tenantAttribute({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
+const tenantAttributeByParameter = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.tenantAttribute({ parameter: args.parameter })
+};
 
-// const tenantAttributeByParameter = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.tenantAttribute({
-//     where: {
-//       parameter: args.parameter
-//     }
-//   }, info)
-// };
+const architectureTypes = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.architectureTypes()
+};
 
-// const architectureTypes = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.architectureTypes({}, info)
-// };
+const architectureType = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.architectureType( {id: args.id} )
+};
 
-// const architectureType = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.architectureType({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
+const architectureDefinitions = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.architectureDefinitions()
+};
 
-// const architectureDefinitions = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.architectureDefinitions({}, info)
-// };
-
-// const architectureDefinition = async (parent, args, context, info) => {
-//   //const userId = getUserId(context)
-//   return context.db.query.architectureDefinition({
-//     where: {
-//       id: args.id
-//     }
-//   }, info)
-// };
+const architectureDefinition = async (root, args, context) => {
+  const userId = getUserId(context)
+  return context.prisma.architectureDefinition({ id: args.id })
+};
 
 
 
@@ -187,8 +160,8 @@ const customerContacts = async (root, args, context) => {
 module.exports = {
   users,
   user,
-  // tenants,
-  // tenant,
+  tenants,
+  tenant,
   services,
   service,
   environments,
@@ -199,21 +172,21 @@ module.exports = {
   customer,
   customerContacts,
   customerContact,
-  // architectureTiers,
-  // architectureTier,
-  // componentTemplates,
-  // componentTemplate,
-  // componentInstances,
-  // componentInstance,
-  // componentAttributes,
-  // componentAttributeById,
-  // componentAttributeByParameter,
-  // tenantAttributes,
-  // tenantAttributeById,
-  // tenantAttributeByParameter,
-  // architectureTypes,
-  // architectureType,
-  // architectureDefinitions,
-  // architectureDefinition
+  architectureTiers,
+  architectureTier,
+  componentTemplates,
+  componentTemplate,
+  componentInstances,
+  componentInstance,
+  componentAttributes,
+  componentAttributeById,
+  componentAttributeByParameter,
+  tenantAttributes,
+  tenantAttributeById,
+  tenantAttributeByParameter,
+  architectureTypes,
+  architectureType,
+  architectureDefinitions,
+  architectureDefinition
 };
 

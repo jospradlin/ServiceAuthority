@@ -20,21 +20,16 @@ const resolvers = {
     Customer,
     CustomerContact,
     EnvironmentTenant,
-    // },
-    // // 3
-    // Service: {
-    //     id: (parent) => parent.id,
-    //     description: (parent) => parent.description,
-    //     url: (parent) => parent.url,
-    // }
 }
 
-// 3
 const server = new GraphQLServer({
     typeDefs: 'schema.graphql',
     resolvers,
+    resolverValidationOptions: {
+        requireResolversForResolveType: false
+    },
     context: req => ({
-        ...req,
+        ...req, 
         prisma
     })
 

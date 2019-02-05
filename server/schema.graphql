@@ -6,8 +6,8 @@ type Query {
   # General Object Requests
   user(id: ID!): User!
   users: [User!]!
-  # tenant(id: ID!): Tenant!
-  # tenants: [Tenant!]!
+  tenant(id: ID!): Tenant!
+  tenants: [Tenant!]!
   service(id: ID!): Service!
   services: [Service!]!
   environment(id: ID!): Environment!
@@ -18,7 +18,22 @@ type Query {
   customers: [Customer!]!
   customerContact(id: ID!): CustomerContact!
   customerContacts: [CustomerContact!]!
-
+  architectureTier(id: ID!): ArchitectureTier!
+  architectureTiers: [ArchitectureTier!]!
+  architectureType(id: ID!): ArchitectureType
+  architectureTypes: [ArchitectureType!]!
+  architectureDefinition(id: ID!): ArchitectureDefinition
+  architectureDefinitions: [ArchitectureDefinition!]!
+  componentTemplate(id: ID!): ComponentTemplate!
+  componentTemplates: [ComponentTemplate!]!
+  componentInstance(id: ID!): ComponentInstance!
+  componentInstances: [ComponentInstance!]!
+  componentAttributeById(id: ID!): ComponentAttribute
+  componentAttributeByParameter(parameter: String!): ComponentAttribute
+  componentAttributes: [ComponentAttribute!]!
+  tenantAttributeById(id: ID!): TenantAttribute
+  tenantAttributeByParameter(parameter: String!): TenantAttribute
+  tenantAttributes: [TenantAttribute!]!
 }
 
 type Mutation {
@@ -72,12 +87,26 @@ type Mutation {
   removeCustomerContactById ( id: ID! ): CustomerContact
   removeCustomerContactByEmail( email: String! ): CustomerContact
 
-}
-
-type Link {
-  id: ID!
-  description: String!
-  url: String!
+  ## Configuration Management - Architecture Data Structures
+  createArchitectureTier( name: String!, priority: Int!): ArchitectureTier
+  updateArchitectureTier( tierId: ID!, name: String!, priority: Int!): ArchitectureTier
+  removeArchitectureTier( id: ID! ): ArchitectureTier
+  createArchitectureType( name: String!): ArchitectureType
+  updateArchitectureType( typeId: ID!, name: String!): ArchitectureType
+  removeArchitectureType( id: ID! ): ArchitectureType
+  createArchitectureDefinition( name: String!, code: String!, description: String, type: String!): ArchitectureDefinition
+  updateArchitectureDefinitionParameters( definitionId: ID!, name: String!, code: String!, description: String): ArchitectureDefinition
+  removeArchitectureDefinition( id: ID! ): ArchitectureDefinition
+  createComponentTemplate( name: String!, code: String!, tier: String!): ComponentTemplate
+  removeComponentTemplate( componentTemplateId: ID! ): ComponentTemplate
+  createComponentInstance( name: String!, environmentCode: String!, compontentTemplateCode: String!): ComponentInstance
+  removeComponentInstance( componentInstanceId: ID! ): ComponentInstance
+  createComponentAttribute( parameter: String!, value: String!, componentInstanceName: String!): ComponentAttribute
+  removeComponentAttributeById( attributeId: ID! ): ComponentAttribute
+  removeComponentAttributeByParameter( parameter: String! ): ComponentAttribute
+  createTenantAttribute( parameter: String!, value: String!, tenantCode: String!): TenantAttribute
+  removeTenantAttributeById( attributeId: ID! ): TenantAttribute
+  removeTenantAttributeByParameter( parameter: String! ): TenantAttribute
 }
 
 type Service {
@@ -92,9 +121,9 @@ type Service {
   version: String
   canBeRemoved: Boolean
   dependentServices: [Service!]!
-  # environments: [Environment!]!
-  # owner: User
-  # tenant: Tenant!
+  environments: [Environment!]!
+  owner: User
+  tenant: Tenant!
 }
 
 
@@ -108,7 +137,27 @@ type User {
   id: ID!
   name: String!
   email: String!
-  # tenantRoles: [Tenant!]!
+  tenantRoles: [Tenant!]!
+}
+
+enum Role {
+  MASTER_ADMIN
+  TENANT_ADMIN
+  TEAM_MEMBER
+}
+
+type Tenant {
+  id: ID!
+  name: String!
+  description: String
+  users: [User!]!
+}
+
+type TenantRole {
+  id: ID!
+  user: User!
+  tenant: Tenant!
+  role: Role!
 }
 
 type Customer {
@@ -119,7 +168,7 @@ type Customer {
   code: String!
   status: String!
   contacts: [CustomerContact!]!
-  # tenants: [EnvironmentTenant!]!
+  tenants: [EnvironmentTenant!]!
 }
 
 type CustomerContact {
@@ -144,14 +193,14 @@ type EnvironmentTenant {
   tenantCreationDate: DateTime
   customer: Customer!
   environment: Environment!
-  #attributes: [TenantAttribute!]!
+  attributes: [TenantAttribute!]!
 }
 
 
 type Environment {
   id: ID!
   createdAt: DateTime!
-  updatedAt: DateTime!
+  updatedAt: DateTime
   name: String!
   code: String!
   description: String
@@ -159,8 +208,89 @@ type Environment {
   classification: String!
   service: Service!
   tenants: [EnvironmentTenant!]!
-  # components: [ComponentInstance!]!
+  components: [ComponentInstance!]!
 }
+
+
+
+
+type ArchitectureTier {
+  id: ID! 
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  priority: Int!
+}
+
+type ComponentTemplate {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  code: String!
+  tier: ArchitectureTier!
+}
+
+type ComponentInstance {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  environment: Environment!
+  component: ComponentTemplate!
+  attributes: [ComponentAttribute!]!
+}
+
+enum ObjectAttributeType {
+  ENVIRONMENT_TENANT
+  COMPONENT
+}
+
+interface Attribute {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  parameter: String!
+  value: String!
+}
+
+type TenantAttribute implements Attribute {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  parameter: String!
+  value: String!
+  tenant: EnvironmentTenant!
+}
+
+type ComponentAttribute implements Attribute {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  parameter: String!
+  value: String!
+  component: ComponentInstance!
+}
+
+type ArchitectureType {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  # infrastructureTypes: [InfrastructureTypes!]!
+}
+
+type ArchitectureDefinition {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  name: String!
+  code: String!
+  description: String
+  type: ArchitectureType!
+  components: [ComponentTemplate!]!
+}
+
 
 
 ## Input Objects
